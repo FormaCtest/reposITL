@@ -1,0 +1,55 @@
+//Roboto
+@font-face {                                       
+    font-family: 'Roboto_light';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 500;
+    src: url('~/assets/fonts/Roboto/Roboto-Light.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Roboto_regular';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 500;
+    src: url('~/assets/fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'Roboto_thin';
+    font-style: normal;
+    font-weight: lighter;
+    font-display: swap;
+   
+    src: url('~/assets/fonts/Roboto/Roboto-Thin.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Roboto_medium';
+    font-style: normal;
+    font-display: swap;
+    src: url('~/assets/fonts/Roboto/Roboto-Medium.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Roboto_Black';
+    font-style: normal;
+    font-display: swap;
+    src: url('~/assets/fonts/Roboto/Roboto-Black.ttf') format('truetype');
+  }
+  //NotoSans
+  @font-face {
+    font-family: 'NS_Medium';
+    font-style: normal;
+    font-display: swap;
+    src: url('~/assets/fonts/Sans/NotoSans-Medium.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'NS_MediumIt';
+    font-style: normal;
+    font-display: swap;
+    src: url('~/assets/fonts/Sans/NotoSans-MediumItalic.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'NS_Regular';
+    font-style: normal;
+    font-display: swap;
+    src: url('~/assets/fonts/Sans/NotoSans-Regular.ttf') format('truetype');
+  }

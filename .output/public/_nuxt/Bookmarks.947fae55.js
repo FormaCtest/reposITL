@@ -1,0 +1,1 @@
+import{a as o,b as s,o as t,e}from"./entry.19428e20.js";const _={},a=e("div",null,[e("span",{class:"my_bookmark"},"\u041C\u043E\u0438 \u0437\u0430\u043A\u043B\u0430\u0434\u043A\u0438")],-1),n=[a];function c(r,d,l,p,i,u){return t(),s("div",null,n)}const m=o(_,[["render",c]]);export{m as default};

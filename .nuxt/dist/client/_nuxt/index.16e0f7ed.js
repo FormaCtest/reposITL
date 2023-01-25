@@ -1,0 +1,1 @@
+import{u as t}from"./SectionStore.763b80b6.js";import{a as o,b as s,o as c}from"./entry.19428e20.js";import"./private.d82c0789.js";const r={setup(){return{sect:t()}},mounted(){this.sect.close_sect()}};function n(e,a,p,i,u,_){return c(),s("div")}const l=o(r,[["render",n]]);export{l as default};

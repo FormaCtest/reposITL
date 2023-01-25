@@ -1,0 +1,65 @@
+.n{
+  position: fixed;
+  margin: 0%; 
+  padding: 0%;
+  width: 80px;
+  left: 0%;
+  height: 66px;
+  z-index:5;
+  .home{
+    position:absolute;
+    left:26px;
+    top: 20px;
+    border-radius: nullpx;
+  }
+   .user{
+    position:absolute;
+    left:30px;
+    top: 20px;
+    border-radius: nullpx;
+   }
+   .support{
+    position:absolute;
+    left:30px;
+    top: 20px;
+    border-radius: nullpx;
+   }
+  &:hover {
+    background: #0b57c2;
+    cursor: pointer;
+  }
+}
+  .nAv {
+    z-index: 10;
+  position: fixed;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+  background: #0E65DD;
+  height: 100%;
+  width: 80px;
+  border-radius: 0px;
+  width: 32px;
+  height: 47px;
+  left: 24px;
+  top: 27px;
+  
+  }
+  .fix3 {
+    position: fixed;
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+    background: #0E65DD;
+    height: 100%;
+    width: 80px;
+    border-radius: 0px;
+    width: 32px;
+  height: 47px;
+  left: 25px;
+  top: 30px;
+    
+    }
+

@@ -1,0 +1,16 @@
+.button {
+    height: 52px;
+    width: 186px;  //деволтные размеры
+    background: #0E65DD;
+    border: 0px;
+    border-radius: 2px;
+    position: absolute;
+    &:hover {
+      cursor: pointer;
+      background: darken(#0E65DD, 4%)
+    }
+  }
+  .create_text{
+    color: white;
+    font-size: 14px;
+  }

@@ -1,0 +1,250 @@
+//Помятка CSS/SCSS
+//идентификатор у которого:not(нету этого идентификатора)
+//свойства можно складывать вместе
+//создание миксина: @mixin установка миксина: @include, поддерживает принятие параметров, через двоеточие можно указать стандарт
+//псевдоклассы типо :hover прописываются внутри блока отдельно от селектора c добавлением &
+//поддерживается разбиение на компоненты, можно разбить scss к примеру на файл scss с переменными, с миксинами и тд
+//после прописать в основном файле import "название компонента, без расщирения "
+//функции sass https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqa1JnT011Zko1VjRtWnUwX2swQ01qZlpZYzctUXxBQ3Jtc0tta0taSkxMa2VqY0c5WlM1WkpvQnFiZTRQYVZDbGtPQkZ4RWJPcUxSeDJaTDdGNnYxallZTTZ2c3pMamZZQ2x0Y0NSNzZRcjlkWE9QMjNxbExiX0RBWWhlTEI3N3lLaGs4OHhHazY2SzZjMjYxSEdPQQ&q=http%3A%2F%2Fsass-lang.com%2Fdocumentation%2FSass%2FScript%2FFunctions.html&v=ytbFS3Nympw
+//*:not(.ITL, .ITL_favicon, .main, .correction, .create, .create_text, .fon, #favicon) {
+//  margin: 0;
+//  padding:0;
+//}
+$blue: #0000ff;
+@font-face {                                       //установка шрифтов
+  font-family: 'Roboto_light';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('~/assets/fonts/Roboto/Roboto-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto_regular';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('~/assets/fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto_thin';
+  font-style: normal;
+  font-weight: lighter;
+  font-display: swap;
+  src: url('~/assets/fonts/Roboto/Roboto-Thin.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto_medium';
+  font-style: normal;
+  font-display: swap;
+  src: url('~/assets/fonts/Roboto/Roboto-Medium.ttf') format('truetype');
+}
+@mixin Favicon($x, $y, $z) {         //параметры на местоположение иконки
+  display: flex;
+  flex-wrap: nowrap;
+  position: absolute;
+  width: 150px;
+  height: 40px;
+  left: $x;
+  right: $y;
+  top: $z;
+  .ITL{
+    position: relative;
+    left: 20px;
+    font-family: 'Roboto_light';     //текст иконки
+    font-style: normal;
+    font-size: 24px;
+    vertical-align: middle;
+    line-height: 50px;
+    color: #0B55BB;
+    line-height: 0px;
+    }
+    .ITL_favicon {                  //сама иконка
+    width: 29px;
+    height: 43px;
+    }
+
+}
+@mixin subtitle($color: black,$family:'Roboto_thin'){
+position: absolute;
+height: 68px;
+width: 600px;
+left: 68px;
+top: 378px;
+//типография
+border-radius: nullpx;
+font-family: $family;
+font-size: 16px;
+font-weight: 250;
+line-height: 30px;
+letter-spacing: 0px;
+text-align: left;
+color: $color;
+
+}
+//миксин для заголовка главной страницы
+@mixin heading ($color: #0E65DD, $family: 'Roboto_thin'){  //установленаа гибкая возможность за счет scss, параметры цвета, шрифта
+  position: absolute;
+  height: 232px;
+  width: 600px;
+  left: 68px;
+  top: 110px;
+  border-radius: nullpx;
+  //типография
+font-family: $family;
+font-style: normal;
+font-size: 20px;
+line-height: 50px;
+color: $color;
+}
+.main {
+  @include heading(); //возможность указать в параметрах цвет и шрифт в параметрах для заголовка
+}
+.correction {
+  @include subtitle(); //возможность указать в параметрах цвет и шрифт в параметрах для подзаголовка
+}
+#favicon {
+  @include Favicon(68px, 0px, 42px )  //отступ слева, справа, высота
+}
+.screen{
+position: absolute;
+height: 530px;
+width: 600px;
+left: 730px;
+top: 95px;
+border-radius: 0px;
+background-color: while;
+pointer-events: none;
+-khtml-user-select: none;
+-o-user-select: none;
+-moz-user-select: none;
+-webkit-user-select: none;
+user-select: none;
+ img{
+  height: 452px;
+  width: 557px;
+ }
+}
+.fon{
+  position:absolute;
+  width: 100%;
+  height: 105%;
+  background-image: url("@/assets/resourses/icons/fon.png");
+  background-position: 55% 45%;
+  border: none;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+}
+.sign{
+  div{
+    display: flex;
+    flex-wrap: nowrap;
+    position: absolute;
+    height: 21px;
+    width: 82px;
+    left: 1192px;
+    top: 50px;
+    border-radius: 0px;
+    p{
+      text-decoration: none;
+      color: black;
+      position: absolute;
+      left: 34px;
+      font-family: 'Roboto_regular';
+      font-style: normal;
+      font-size: 15px;
+      vertical-align: middle;
+      line-height: 0px;
+      &:hover{
+        color: $blue;
+        transition: 0.5s;
+
+    }
+  }
+    img{
+      top: 6px;
+      position: absolute;
+      width: 19px;
+      height: 17px;
+    }
+  }
+}
+.line{
+  font-family:'Roboto_regular';
+  font-size: 24px;
+  color: #CCCCCC;
+  vertical-align: middle;
+  line-height: 50px;
+  .reg{
+    color: rgb(12, 12, 12);
+  }
+}
+@keyframes rotation {
+  0% {
+      transform:rotate(0deg);
+  }
+  100% {
+      transform:rotate(360deg);
+  }
+}
+.analysis{
+  position: absolute;
+  top: 170px;
+  left: 290px;
+  animation-name: rotation;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+.eye{
+  position:absolute;
+  left:350px;
+  top: 270px;
+  opacity: 0;
+}
+
+.jic:focus-within {
+  input{
+  transition-duration: 0.7s;
+  border-bottom: solid 1px blue;
+  }
+  .eye{
+    transition-duration: 0.7s;
+    opacity: 1;
+  }
+  .eye:hover{
+    transition-duration: 0.1s;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+}
+.eye2{
+  top: 375px;
+}
+.cij:focus-within {
+  input{
+  transition-duration: 0.7s;
+  border-bottom: solid 1px blue;
+  }
+  .eye{
+    transition-duration: 0.7s;
+    opacity: 1;
+  }
+  .eye:hover{
+    transition-duration: 0.1s;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+}
+.eye3{
+  position:absolute;
+  left:350px;
+  top: 175px;
+  opacity: 0;
+}
+.error{
+  border-bottom: solid 1px red;
+  }
+

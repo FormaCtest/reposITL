@@ -1,0 +1,34 @@
+.in{
+    position: absolute;
+    height: 137px;
+    width: 380px;
+    input{ 
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    background: white;
+    border-bottom: solid 1px #D8D8D8;
+    outline:none;
+    margin-top: 60px;
+    padding-bottom: 10px;
+    padding-left:10px;
+    height: 30px;
+    font-family: "Roboto_regular";
+    color: black;
+    width: 100%;
+}
+::placeholder{
+  color: rgb(138, 138, 138);
+}
+input:focus{
+  border-bottom: solid 1px blue;
+  transition-duration: 0.7s;
+}
+input.error{
+  border-bottom:solid 1px rgb(255, 0, 0);
+}
+input.update{
+border-bottom:solid 1px rgb(0, 17, 255);
+transition-duration: 0.5s;
+}
+  }
