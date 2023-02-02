@@ -1,5 +1,6 @@
 <template>
     <div>
+        <User_window />
     <div>
         <span class="my_bookmark">Мои закладки</span>
     </div> 

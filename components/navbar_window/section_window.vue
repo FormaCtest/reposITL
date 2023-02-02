@@ -23,8 +23,8 @@
             </div> 
             <div :class="[{'razd': true}]" >
                 <div class="sec" v-for="list of list_child">
-                        <div @click="navigateTo('/'+teams.session_TeamCode+'.itl.wiki/section/'+list.id);
-                         tp(list.id, list.name)" class="sec"><img src="@/assets/resourses/icons/folder.png">
+                        <div @click="tp(list.id, list.name)" class="sec">
+                            <img src="@/assets/resourses/icons/folder.png">
                           <p>{{ list.name.length>=24?list.name.substring(0, 21)+"...":list.name }}</p>
                     </div>
                 </div>
@@ -79,8 +79,11 @@ return{fun, sect, priv, teams, article}
     methods:{
         
         tp(id, name){
-            this.sect.vie_sect(id, name)
-         window.location.href='/'+this.teams.session_TeamCode+'.itl.wiki/section/'+id
+            if (id!=this.sect.current_section) {
+                this.sect.vie_sect(id, name)
+         navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/section/'+id)
+            }
+           
         },
         SEARCH(){
          if (this.index_sort===''){
@@ -326,6 +329,7 @@ await useFetch(url, {
     left: 0%;
     margin-left: 15px;
     top: 0px;
+    background-color: white;
     z-index: 2;
     border-bottom: 1px solid #e0dbf3;
     margin-bottom: 2px;

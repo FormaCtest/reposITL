@@ -4,7 +4,7 @@
         <div class="add_s"><span >Добавление пользователя</span></div>
         <InputMail :message="message" @create="MailValue" :error="error" :left="430" :top="135" :width="470" :placeholder="'Введите email адресса через запятую или пробел'"/>
         <SelectStatus :top="280" :left="430" @add_role="save_role"/>
-        <button @click="Add_users()" class="button create_text">Выслать приглашение</button>
+        <button @click="Add_users" class="button create_text">Выслать приглашение</button>
     </div>
 </template>
 <script>
@@ -25,8 +25,8 @@ export default {
         return{
             update: false,
             error: false,
-            email: '',
-            role: '',
+            email: false,
+            role: 'admin',
             Array_email: [],
             message: ''
         }
@@ -34,7 +34,8 @@ export default {
 
     methods:{
         async Add_users(){
-        this.email = (this.email.trim()).replaceAll(' ',',')
+            if (this.email) {
+                this.email = (this.email.trim()).replaceAll(' ',',')
         this.Array_email = this.email.split(',')
         for (var i = 0; i< this.Array_email.length; i++) {
             if ((this.Array_email[i].search(/[A-Z0-9._%+-]+@[A-Z0-9-]+\.[A-Z]{2,4}/igm))===-1) {
@@ -68,10 +69,16 @@ export default {
             this.error=true
             this.message='ошибочка'
            }
+        
             }
             
             }
-        }
+        }   
+            }else {
+                this.error=true
+                this.message='Пожалуйста введите хотя бы одну почту'
+            }
+        
         },
         save_role(role) {
          this.role = role

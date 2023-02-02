@@ -1,7 +1,7 @@
 <template>
     <div>
        <div v-if="good" class="no_work">
-        <span >Мои работы</span>
+        <span @click="ui()">Мои работы</span>
         <p v-if="!list_items">Похоже, вы еще не создали ни одной записи</p>
         <div v-if="list_items" class="items_block" v-for="list of list_items">  
             <img class="file" src="@/assets/resourses/icons/fold_full.png">
@@ -20,9 +20,9 @@
             <div @click="article.use_article(list.name, list.id); navigateTo('/'+teams.session_TeamCode+'.itl.wiki/my_works/'+list.id+'/edit')" class="edits">
               <img src="@/assets/resourses/icons/pencil.png">
             Правка
-            </div>
+            </div> 
             <div class="setur">
-              <ChangingAccess :type_entity="'article'" :id_entity="list.id" @For_whom="edit_pr" :left="700" :top="8" text="У всех" />
+              <ChangingAccess :type_entity="1" :id_entity="list.id" @for_whom="edit_pr" :left="700" :top="8" text="У всех" />
             </div>
             </div>
           </div>
@@ -55,14 +55,13 @@ export default{
             good: false
         }
     },
-    created(){
+    mounted(){
         
         setTimeout(()=>{this.users.TakingData()}, 500) 
         setTimeout(()=>{this.info_items()}, 1000) 
 
     },
     methods:{
-
       async edit_pr(type_action, userID, type_entity, id_entity){
         const url = new URL(
     "https://api.wiki.itl.systems/team/abilities/edit"
@@ -159,7 +158,14 @@ this.good=true
         line-height: 2;
     }
 }
-
+.plug{
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  border: 1px solid black;
+  left: 400px;
+  top: 400px;
+}
 .items_block{
     position: relative;
     display: flex;
@@ -188,6 +194,7 @@ this.good=true
     .ik{
       min-width: 150px;
     }
+    
     .no{
       width: 800px;
       padding-top: 7px;

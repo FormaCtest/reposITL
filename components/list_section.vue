@@ -41,8 +41,8 @@ const teams = useTeamsStore()
 
 return{fun, sect, priv, teams}
     },
-    mounted(){
-        this.info_article()
+    async mounted(){
+        setTimeout(()=>{this.info_article()}, 100) 
     },
     beforeUpdate(){
         
@@ -84,7 +84,7 @@ const {data} = await useFetch(url, {
     headers,
 })
 this.TH=data.value.data
-        },
+        }, 
         tp(id, name, block){
             this.$emit('selected', id, name, block)
         },
@@ -114,15 +114,12 @@ const headers = {
 };
 
 
-useFetch(url, {
+const {data: l} = await useFetch(url, {
     method: "GET",
     headers,
-}).then((outputData) => {
-    
-    this.list_section=outputData.data._rawValue.data
+})
+    this.list_section=l.value.data
     this.sort_section=this.list_section;
-    
-});
         }
     }
 }
@@ -184,6 +181,7 @@ useFetch(url, {
     border: 0px;
     width: 220px;
     height: 40px;
+    background-color: white;
     left: 0%;
     margin-left: 15px;
     top: 0px;

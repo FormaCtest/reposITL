@@ -41,8 +41,8 @@ const priv = useThePrivateStore()
 const user = useDataUserStore()
 return{fun, teams, priv, user, sect}
     },
-    mounted(){  //сканирует доступ разделов и создает массив, доступный для показа пользователю с настоящей сессией
-      setTimeout(()=>{this.info_article()}) 
+    mounted(){  //сканирует доступ разделов и создает массив, доступный для показа пользователю с настоящей сессией 
+      setTimeout(()=>{this.info_article()}, 100) 
     },
     methods:{
         async info_article() {

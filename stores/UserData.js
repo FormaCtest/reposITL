@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useThePrivateStore } from './private';
 export const useDataUserStore = defineStore('UserData', ()=>{
-    const team = useTeamUserStore()
+    const team = useTeamUserStore() 
     const priv = useThePrivateStore()
     const userName = useCookie('name', {maxAge: priv.Age})  //имя
     const userSubname = useCookie('subname', {maxAge: priv.Age})  //фамилия

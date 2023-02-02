@@ -29,17 +29,6 @@
 import { useThePrivateStore } from '~~/stores/private';
 import { useTeamsStore } from '~~/stores/Teams';
 import { useArticleStore } from '~~/stores/ArticleStore';
-import EditorJs from '@editorjs/editorjs'
- import Header from '@editorjs/header'; 
- import List from '@editorjs/list';
- import ImageTool from '@editorjs/image';
- import Table from '@editorjs/table';
- import Quote from '@editorjs/quote';
- import CodeTool from '@editorjs/code';
- import Delimiter from '@editorjs/delimiter';
- import RawTool from '@editorjs/raw';
- import Warning from '@editorjs/warning';
- import Checklist from '@editorjs/checklist';
 definePageMeta ({
 layout: "company",
 middleware: ['auth', 'team'],
@@ -50,51 +39,6 @@ setup(){
   const priv = useThePrivateStore()
   const teams = useTeamsStore()
   const article = useArticleStore()
-  const  editor = new EditorJs({
-    tools: { 
-    header: {
-      class: Header, 
-      inlineToolbar: ['link'],
-    }, 
-    list: { 
-      class: List, 
-      inlineToolbar: true 
-    },
-    image: {
-        class: ImageTool
-    },
-    quote: {
-        class: Quote
-    },
-    code: {
-        class: CodeTool
-    },
-    delimiter: {
-        class: Delimiter
-    },
-    raw: {
-        class: RawTool
-    },
-    table: {
-         class: Table
-    },
-    warning: {
-        class: Warning
-    },
-    checklist: {
-        class: Checklist
-    },
-},
-    readOnly: true,
-    holder: 'editorjss', 
-    onReady: ()=>{
-        import_edit()
-   
-},
-onChange:() =>{
-    
-}
-})
 async function import_edit(){
         const url = new URL(
           "https://api.wiki.itl.systems/team/article/edit"
@@ -114,10 +58,12 @@ const headers = {
 };
 
 
-await useFetch(url, {
+const {data} = await useFetch(url, {
     method: "GET",
     headers,
-}).then(r=>decode_edit(r.data.value.data.article.tabs))
+})
+return decode_edit(data.value.data.article.tabs)
+
     }
 function decode_edit(data){   //декодирует для вывода
   var ready_made_content = []
@@ -184,22 +130,31 @@ function decode_edit(data){   //декодирует для вывода
         break;
     } 
     }
-    editor.blocks.render({"time" : 1550476186479,
+    const options= {
+      id: 'editorjss',
+      data: {"time" : 1550476186479,
     "blocks" : ready_made_content,
-    "version" : "2.8.1"})
+    "version" : "2.8.1"},
+    view: true
+    }
+    return options
+
+     
 }
-  return{priv, teams, article, editor}
+  return{priv, teams, article, import_edit}
 },
-created(){
+async mounted(){
 setTimeout(() => {
   this.info_article()
-}, 500); 
+  this.import_edit().then((options)=>{this.editor=this.$editor(options)})
+}, 100); 
 },
 data(){
   return{
   article_data: [],
   editor_obj: {},
-  chain: false
+  chain: false,
+  editor: null
   }
 },
 methods:{

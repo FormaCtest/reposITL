@@ -38,7 +38,7 @@ export const useThePrivateStore = defineStore('private', () => {
         user.TakingData()
         userTeam.ImportTeam().then (()=>{
           if (userTeam.yourTeam.length>=1) {
-            window.location.href = "/Account/your_company" 
+            navigateTo("/Account/your_company" )
           }else navigateTo('Team/Add')})
       }else {
         this.finish.a=true
@@ -109,10 +109,10 @@ export const useThePrivateStore = defineStore('private', () => {
           method: "POST",
           headers,
          })
-         
          token.value= null 
          user.DeleteData()
          Teams.exit_company()
+         navigateTo('/')
         }
     
    return { finish, token, FetchUser, Delete_token,  BuildUser }

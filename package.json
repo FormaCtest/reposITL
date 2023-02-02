@@ -27,6 +27,7 @@
     "@editorjs/list": "^1.8.0",
     "@editorjs/table": "^2.2.0",
     "@pinia/nuxt": "^0.4.6",
+    "nuxt-socket-io": "^3.0.12",
     "pinia": "^2.0.27"
   }
 }

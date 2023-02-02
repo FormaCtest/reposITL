@@ -163,7 +163,7 @@ setTimeout(()=>{this.Get_list()}, 1000)
          return (a)
         },
         Edit_score (type_action, userID){
-         this.$emit('For_whom', type_action, userID, this.te, this.ie)
+         this.$emit('for_whom', type_action, userID, this.te, this.ie)
         },
         SEARCH(){
             this.sort_user=this.list_user.filter(item=>item.first_name===this.search||item.last_name===this.search)
@@ -413,6 +413,7 @@ this.list_user = a.data.value.data.employees;
         height: 53px;
         margin: 0px;
         padding-left: 40px;
+        background-color: white;
         margin-bottom: 20px;
         padding-right: 40px;
         top: 0px;

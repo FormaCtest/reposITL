@@ -49,7 +49,7 @@ export default{
             good: false
         }
     },
-    created(){
+    mounted(){
         setTimeout(()=>{this.info_items()}, 500) 
         // this.test_info()
     },

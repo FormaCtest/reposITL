@@ -2,7 +2,7 @@
     <div>  
       <div class="contayner_Tea">
       
-      <span class="heaD">Ваши компании</span>
+      <span @click="mn" class="heaD">Ваши компании</span>
       
       <div class="company">
       <div class="team" v-for="team of teams" :key="team">
@@ -20,32 +20,38 @@
 import {useTeamsStore} from '~~/stores/Teams';
 import { useTeamUserStore } from '~~/stores/UserData';
 import { useDataUserStore } from '~~/stores/UserData';
+import { useThePrivateStore } from '~~/stores/private';
+
 definePageMeta ({
   layout: "user",
   middleware: ['auth'],
 })
 
 export default{
-  setup() {
-  const team = useTeamUserStore()
-  const user = useDataUserStore()
-  const TeamID = useTeamsStore()
-  return {team, TeamID, user}
-},
+
 data(){
   return{
-    teams: [],
+    teams: false,
     onch: false
   }
 },
+
 mounted(){
   this.TeamID.exit_company()
-  this.team.ImportTeam().then(()=>{this.UpdateTeam(); this.onch= true})
+  setTimeout(()=>{this.team.ImportTeam().then(()=>{this.UpdateTeam(); this.onch= true})}, 100) 
 },
+setup() {
+const team = useTeamUserStore()
+const user = useDataUserStore()
+const TeamID = useTeamsStore()
+const priv  = useThePrivateStore()
 
+return {team, TeamID, user, priv}
+},
 methods:{
   UpdateTeam() {
     this.teams=this.team.yourTeam  
+    
   },
   TeleportToTheCompany(TeamId, TeamCode, TeamName){
     for(var i=0; i<this.teams.length; i++) {

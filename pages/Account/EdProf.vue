@@ -22,7 +22,7 @@
         <!--Загрузка фото-->
         <div class="img_loading">
          
-          <img :src="url_img">
+          <img src="@/assets/resourses/icons/user_circle.png">
           <p>Используйте изображение размером не менее 256 на 256 пикселей в формате .jpg или .png</p>
         </div>
       
@@ -35,6 +35,7 @@
     </div>
 </template>
 <script>
+import {useWebSockStore} from '~~/stores/WebSockStore';
 import { useThePrivateStore } from '~~/stores/private';
 import { useDataUserStore } from '~~/stores/UserData';
 definePageMeta({
@@ -43,13 +44,13 @@ definePageMeta({
 })
 export default {
   setup() {
+ const web = useWebSockStore()
  const priv = useThePrivateStore()
  const user = useDataUserStore()
-    return {priv, user}
+    return {priv, user, web}
 }, 
-created(){
-this.user.TakingData()
-this.info_user()
+mounted(){
+setTimeout(()=>{this.user.TakingData()}, 500) 
 },
   data() {
     return{
@@ -72,43 +73,6 @@ this.info_user()
     }
   },
   methods:{
-    async info_user(){
-      const url = new URL(
-    "https://api.wiki.itl.systems/account"
-);
-
-const headers = {
-    "Authorization": "Bearer "+this.priv.token,
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-await useFetch(url, {
-    method: "GET",
-    headers,
-}).then((r)=>{
-  const url = new URL(
-    "https://api.wiki.itl.systems/editor/fetch/url"
-);
-var params ={
-  "url": "https://api.wiki.itl.systems/assets/img/user.jpg"
-}
-Object.keys(params)
-    .forEach(key => url.searchParams.append(key, params[key]));
-const headers = {
-    "Authorization": "Bearer "+this.priv.token,
-    "Accept": "application/json",
-};
-
-
-useFetch(url, {
-    method: "GET",
-    headers,
-})
-})
-
-
-    },
     save_name() {
      if (this.name===''||this.subname===''||this.email==='') {
       this.error=true
@@ -141,23 +105,6 @@ useFetch(url, {
 this.update=true
 setTimeout(()=>{this.update=false}, 500)
      }
-    },
-    async save_img(event) {
-      const IMG = new FormData()
-      IMG.append('image', event.target.files[0])
-      const url = new URL(
-    "https://api.wiki.itl.systems/account/picture/change"
-);
-const headers = {
-    "Authorization": "Bearer "+this.priv.token,
-    "Accept": "application/json",
-};
-useFetch(url, {
-    method: "POST",
-    headers,
-    body: IMG
-})
-
     },
     Reload(){
      this.un_ps=false

@@ -27,70 +27,25 @@ import { useThePrivateStore } from '~~/stores/private';
 import { useTeamsStore } from '~~/stores/Teams';
 import { useDataUserStore } from '~~/stores/UserData';
 import {useArticleStore} from '~~/stores/ArticleStore';
- import EditorJs from '@editorjs/editorjs'
- import Header from '@editorjs/header'; 
- import List from '@editorjs/list';
- import ImageTool from '@editorjs/image';
- import Table from '@editorjs/table';
- import Quote from '@editorjs/quote';
- import CodeTool from '@editorjs/code';
- import Delimiter from '@editorjs/delimiter';
- import RawTool from '@editorjs/raw';
- import Warning from '@editorjs/warning';
- import Checklist from '@editorjs/checklist';
  definePageMeta ({
   middleware: ['auth', 'team'],
 })
 export default {
-
+async mounted() {
+    const options= {
+      id: 'editorjs',
+      data: {},
+    }
+    this.editor=this.$editor(options)
+},
 setup(){
     const sect = useSectionStore()
     const priv = useThePrivateStore()
     const teams = useTeamsStore()
     const user = useDataUserStore()
     const article = useArticleStore()
-const  editor = new EditorJs({
-    tools: { 
-    header: {
-      class: Header, 
-      inlineToolbar: ['link'],
-    }, 
-    list: { 
-      class: List, 
-      inlineToolbar: true 
-    },
-    image: {
-        class: ImageTool
-    },
-    quote: {
-        class: Quote
-    },
-    code: {
-        class: CodeTool
-    },
-    delimiter: {
-        class: Delimiter
-    },
-    raw: {
-        class: RawTool
-    },
-    table: {
-         class: Table
-    },
-    warning: {
-        class: Warning
-    },
-    checklist: {
-        class: Checklist
-    },
-},
 
-
-    holder: 'editorjs', 
-
-})
-
-return {editor, priv, teams, user, sect, article}
+return {priv, teams, user, sect, article}
 },
 data(){
     return{
@@ -104,7 +59,8 @@ data(){
     act: [],
     check_pub: false,
     vis_sh: false,
-    additionally: false
+    additionally: false,
+    editor: null
     }
 },
 methods:{

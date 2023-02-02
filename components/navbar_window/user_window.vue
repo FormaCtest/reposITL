@@ -6,12 +6,12 @@
           <div class="v" @click="navigateTo('/Account/Bookmarks')"><img src="@/assets/resourses/icons/bookmark.png"><p>Закладки</p></div>
           <div class="v" @click="navigateTo('/Account/EdProf')"><img src="@/assets/resourses/icons/pencil.png"><p>Редактировать профиль</p></div>
           <div class="v" @click="navigateTo('/Account/your_company')"><img src="@/assets/resourses/icons/repeat.png"><p>Сменить компанию</p></div>
-          <div class="v" @click="(priv.Delete_token(),navigateTo('/'))"><img src="@/assets/resourses/icons/sign.png"><p>Выйти</p></div>
+          <div class="v" @click="(priv.Delete_token())"><img src="@/assets/resourses/icons/sign.png"><p>Выйти</p></div>
           <div v-if="fun.fon" @click="fun.reset()" class="fixFON"></div>
         </nav>
         </div>
     </div>
-</template>
+</template> 
 <script>
 import {useVisFunStore} from "@/stores/NavbarStore"
 import { useThePrivateStore } from "~~/stores/private"

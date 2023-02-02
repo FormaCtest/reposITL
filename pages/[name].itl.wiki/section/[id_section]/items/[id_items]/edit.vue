@@ -16,7 +16,7 @@
             <div id="editorjSj"></div>
             <div v-if="additional">
                 <div class="era"></div>
-            <div class="additional"><div class="lik" @click=" test_save(2)"><span>Сохранить черновик</span></div></div>
+            <div class="additional"><div class="lik" @click=" test_save(3)"><span>Сохранить черновик</span></div></div>
             <div class="additionalOO"><div class="lik" @click="unart()" ><span>Удалить</span></div></div>
         </div>
             </div>
@@ -28,17 +28,7 @@ import { useThePrivateStore } from '~~/stores/private';
 import { useTeamsStore } from '~~/stores/Teams';
 import { useDataUserStore } from '~~/stores/UserData';
 import {useArticleStore} from '~~/stores/ArticleStore';
- import EditorJs from '@editorjs/editorjs'
- import Header from '@editorjs/header'; 
- import List from '@editorjs/list';
- import ImageTool from '@editorjs/image';
- import Table from '@editorjs/table';
- import Quote from '@editorjs/quote';
- import CodeTool from '@editorjs/code';
- import Delimiter from '@editorjs/delimiter';
- import RawTool from '@editorjs/raw';
- import Warning from '@editorjs/warning';
- import Checklist from '@editorjs/checklist';
+
  definePageMeta ({
   middleware: ['auth', 'team'],
 })
@@ -50,50 +40,7 @@ setup(){
     const teams = useTeamsStore()
     const user = useDataUserStore()
     const article = useArticleStore()
-const  editor = new EditorJs({
-    tools: { 
-    header: {
-      class: Header, 
-      inlineToolbar: ['link'],
-    }, 
-    list: { 
-      class: List, 
-      inlineToolbar: true 
-    },
-    image: {
-        class: ImageTool
-    },
-    quote: {
-        class: Quote
-    },
-    code: {
-        class: CodeTool
-    },
-    delimiter: {
-        class: Delimiter
-    },
-    raw: {
-        class: RawTool
-    },
-    table: {
-         class: Table
-    },
-    warning: {
-        class: Warning
-    },
-    checklist: {
-        class: Checklist
-    },
-},
-    holder: 'editorjSj', 
-    onReady: ()=>{
-        import_edit()
-   
-},
-onChange:() =>{
-    
-}
-})
+
 async function import_edit(){
         const url = new URL(
           "https://api.wiki.itl.systems/team/article/edit"
@@ -113,10 +60,11 @@ const headers = {
 };
 
 
-await useFetch(url, {
+const {data} = await useFetch(url, {
     method: "GET",
     headers,
-}).then(r=>decode_edit(r.data.value.data.article.tabs))
+})
+return decode_edit(data.value.data.article.tabs)
     }
     function decode_edit(data){   //декодирует для вывода
   var ready_made_content = []
@@ -183,20 +131,26 @@ await useFetch(url, {
         break;
     } 
     }
-    editor.blocks.render({"time" : 1550476186479,
+    const options = {
+      id: 'editorjSj',
+      data: {"time" : 1550476186479,
     "blocks" : ready_made_content,
-    "version" : "2.8.1"})
+    "version" : "2.8.1"},
+    }
+    return options
+    
 }
-return {editor, priv, teams, user, sect, article}
+return {priv, teams, user, sect, article, import_edit}
 },
-created(){
+mounted(){
+    setTimeout(()=>{this.import_edit().then((options)=>{this.editor=this.$editor(options)})}, 100)
    setTimeout(()=>{this.info_article().then(()=>{this.h_name= this.article_data.info_public.article.name;
     this.link_section=this.article_data.info_public.article.section.name;
     this.parent=this.article_data.info_public.article.section.id
     })}, 500) 
 },
 data(){
-    return{
+    return{ 
     tggg: false,
     errory: false,
     alert: '',
@@ -209,6 +163,7 @@ data(){
     vis_sh: false,
     additional: false,
     article_data: [],
+    editor: null
     }
 },
 methods:{
@@ -233,7 +188,7 @@ useFetch(url, {
     body: JSON.stringify(body),
 }).then(()=>{
     this.article.exit_article();
-    window.location.href='/'+this.teams.session_TeamCode+'.itl.wiki'
+    navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki') 
 })
 
     },
@@ -410,7 +365,7 @@ let body = {
     "action": type,
     "name": this.h_name,
     "tabs": {...edit_for},     
-};
+}; 
 if (this.act){
     body.abilities= {...this.act}
 }
@@ -444,7 +399,7 @@ useFetch(url, {
     body: JSON.stringify(body),
 });
 }  
-navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/section/'+this.sect.current_section+'/items/'+this.article.article_id)  
+navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/section/'+this.sect.current_section)  
 }else{
     if (r.error.value===null)
     navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/')

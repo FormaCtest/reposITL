@@ -9,15 +9,15 @@
           <support_window v-if="fun.support"/>
           <create-window v-if="fun.plus"/>
           <setting-window v-if="fun.setting"/>
-          <create-window v-if="fun.plus" />
+          <create-window v-if="fun.plus" /> 
           <home :a_home="130"/>
           <support  :a_support="500"/>
           <user :a_user="566"/>
-          <setting :a_setting="434" v-if="this.teams.role==='owner'||this.teams.role==='admin'"/>
+          <setting :a_setting="434" v-if="role==='owner'||role==='admin'"/>
           <plus :a_plus="196"/>
           <magnifier :a_magnifier="262"/> 
           <div class="nAv">
-          <div @click="fun.reset(), navigateTo('/'+teams.session_TeamCode+'.itl.wiki')"><img src ='@/assets/resourses/icons/logo.png'></div>
+          <div @click="fun.reset(); navigateTo('/'+teams.session_TeamCode+'.itl.wiki')"><img src ='@/assets/resourses/icons/logo.png'></div>
           </div>
           </div>
         </div>
@@ -36,7 +36,14 @@
   const sect = useSectionStore()
   return { priv, fun, teams, sect}
   },
- 
+  mounted(){
+this.role=this.teams.role
+  },
+  data(){
+    return{
+      role: ''
+    }
+  }
   }
   </script>
  <style scored lang="scss">

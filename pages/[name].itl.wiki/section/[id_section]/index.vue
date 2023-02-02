@@ -1,10 +1,12 @@
 <template>
     <div >
-      <div>
+      <div> 
         <SectionWindow/>
-      <div @click="chain=chain?false:true" class="chain"><img src="@/assets/resourses/icons/chain.png"></div>
-      <div @click="navigateTo('/'+teams.session_TeamCode+'.itl.wiki/section/'+sect.current_section+'/edit')" class="iopn"><img src="@/assets/resourses/icons/pencil.png"></div>
-      <ChangingAccess :type_entity="2" :id_entity="sect.current_section" @click="chain=false" @For_whom="edit_section" :left="1200" :top="42"/>
+      <div v-if="mass_sec.section">
+        <div v-if="teams.role!=='user'||mass_sec.canShare" @click="chain=chain?false:true" class="chain"><img src="@/assets/resourses/icons/chain.png"></div>
+      <div v-if="teams.role!=='user'||mass_sec.canEdit" @click="navigateTo('/'+teams.session_TeamCode+'.itl.wiki/section/'+sect.current_section+'/edit')" class="iopn"><img src="@/assets/resourses/icons/pencil.png"></div>
+      <ChangingAccess v-if="teams.role!=='user'||mass_sec.section.created_by==user.userId" :type_entity="2" :id_entity="sect.current_section" @click="chain=false" @For_whom="edit_section" :left="1200" :top="42"/>
+      </div>
       <SHaRM v-if="chain" :left="1300" :top="90" :left_arrw="385" :type_entity="2" :id_entity="this.sect.current_section"/>
         <div class="hhtii">{{ link_sect }}</div>
         <div class="tyurie3">{{ sect.current_name }}</div>
@@ -16,8 +18,9 @@
             &nbsp;Обновлено:&nbsp; <div class="yu89">{{ dateXXX }}</div>
           </div> 
         </div>
-        <div v-if="content_section.length>=1&&content_section!=='.'" class="sect_cov" >
-         <p>{{ content_section }}</p>   <!--Тут содержание раздела-->
+        <div v-if="content_section&&content_section!=='.'" class="sect_cov" >
+         <p>{{ content_section }}</p>   
+         <!-- <div id="editorjs"></div> -->
         </div>      
         <div class="ioko0">  
           <div class="block_it" v-for="list of list_section">
@@ -87,12 +90,15 @@ const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
-
-
- const w = await useFetch(url, {
+var w = 0
+if (this.teams.role!=='user'){
+  w = await useFetch(url, {
     method: "GET",
     headers,
 })
+}
+ 
+
 const z = await useFetch(url2, {
     method: "GET",
     headers,
@@ -103,17 +109,51 @@ return ([w, z])    //w не доступна, доступ ограничива�
   
     return{sect, priv, teams, block_2, give_data, article, user}
   },
-  created(){
-    setTimeout(()=>{this.info_items()}, 500);
+  mounted(){
+    setTimeout(()=>{this.info_items()}, 100);
     setTimeout(()=>{this.give_data().then(r=>{
       this.analyse_the_path(r[1])
+      if (this.teams.role!=='user') {
       this.content_section=r[0].data._rawValue.data.section.content
-    })}, 500)
+    //   var blockI = []
+    //   if (this.content_section.length>80) {
+    //    var count = Math.round(this.content_section.length/80)
+    //    for (let c = 0; c<=count; c++){
+    //     blockI.push({"id": "save"+c, "type": "paragraph", "data": {"text": this.content_section.substring(c<=0?0:((c-1)*160), (c*160)) } })
+    //    }
+    //    const options = {
+    //     id: 'editorjs',
+    //      view: true,
+    //      data: {"time" : 1550476186479,
+    // "blocks" : blockI,
+    // "version" : "2.8.1"
+    //   },
+      
+    // }
+    // this.editor=this.$editor(options)
+    //   }else{
+    //     const options = {
+    //     id: 'editorjs',
+    //      view: true,
+    //      data: {"time" : 1550476186479,
+    // "blocks" : [{"id": "save", "type": "paragraph", "data": {"text": this.content_section } }],
+    // "version" : "2.8.1"
+    //   },
+      
+    // }
+    // this.editor=this.$editor(options)
+      // }
+      
+    // var re = /&nbsp;/gi;
+      // if (this.content_section.indexOf('&nbsp;')!==-1) {
+      //   var newstr = this.content_section.replace(re, ' ');
+      //   this.content_section = newstr
+      // }
+    }})}, 200)
     this.info_pr()
-    this.add_p()
-  
+    this.add_p() 
   },
-  data(){
+  data(){  
     return{
      mass_sec: {},
      fullname: '',
@@ -123,7 +163,8 @@ return ([w, z])    //w не доступна, доступ ограничива�
      content_section: '',
      link_sect: '',
      chain: false,
-     done: false
+     done: false,
+     editor: false
 
     }
   },
@@ -197,7 +238,7 @@ useFetch(url, {
     tp(id, name){
             this.sect.close_sect()
          this.sect.vie_sect(id, name)
-         window.location.href='/'+this.teams.session_TeamCode+'.itl.wiki/section/'+id
+         navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/section/'+id) 
         },
     import_date(date){
       var month = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
@@ -226,22 +267,22 @@ const w = await useFetch(url, {
     method: "GET",
     headers,
 })
-
-this.mass_sec=w.data._rawValue.data.section
-for (var p = 0; p<=this.mass_sec.items.length-1; p++){
-    if (this.mass_sec.items[p].status_id===3){
-        this.list_items.push(this.mass_sec.items[p])
+this.mass_sec=w.data._rawValue.data
+for (var p = 0; p<=this.mass_sec.section.items.length-1; p++){
+    if (this.mass_sec.section.items[p].status_id===3){
+        this.list_items.push(this.mass_sec.section.items[p])
     }
 }
-this.list_section = this.mass_sec.child
-this.sect.vie_sect(this.mass_sec.id, this.mass_sec.name)
-this.fullname=this.mass_sec.creator.fullname
+this.list_section = this.mass_sec.section.child
+this.sect.vie_sect(this.mass_sec.section.id, this.mass_sec.section.name)
+this.fullname=this.mass_sec.section.creator.fullname
 var month = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
-this.dateXXX= new Date(this.mass_sec.updated_at)
+this.dateXXX= new Date(this.mass_sec.section.updated_at)
 this.dateXXX= this.dateXXX.getDate()+' '+month[this.dateXXX.getMonth()]+" "+
 this.dateXXX.getHours()+":"+this.dateXXX.getMinutes() 
 
         },
+     
   }
 }
 </script>
@@ -371,7 +412,7 @@ this.dateXXX.getHours()+":"+this.dateXXX.getMinutes()
 }
 .sect_cov{
   position: relative;
-  width: 900px;
+  width: 500px;
   top: 160px;
   left: 413px;
   font-family: 'Roboto_regular';
@@ -379,5 +420,19 @@ this.dateXXX.getHours()+":"+this.dateXXX.getMinutes()
   p{
     word-break: break-all;
   }
+  #editorjs{
+    position: absolute;
+    top: 0px;
+    left: -30px;
+    width: 800px;
+    border: 1px solid black;
+    max-height: 400px;
+    
+    .cdx-block{
+      position: relative;
+      left: -49px;
+    }
+  }
 }
+
 </style>

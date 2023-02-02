@@ -6,8 +6,8 @@ export const useArticleStore = defineStore('article', ()=>{
 const priv = useThePrivateStore()
 const teams = useTeamsStore()
 const sect = useSectionStore()
-const article_name = useCookie('name', {maxAge: priv.Age})
-const article_id = useCookie('id', {maxAge: priv.Age})
+const article_name = useCookie('art_name', {maxAge: priv.Age})
+const article_id = useCookie('art_id', {maxAge: priv.Age})
 function use_article(name, id){
 article_name.value = name
 article_id.value = id

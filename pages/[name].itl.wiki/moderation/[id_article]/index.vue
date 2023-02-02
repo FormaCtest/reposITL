@@ -1,7 +1,7 @@
 <template>
     <div>
       <div v-if="article_data.info_public"> 
-      <div @click="navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/my_works/'+article.article_id+'/edit')" class="kiut"><img src="@/assets/resourses/icons/pencil.png">Правка</div>
+      <div @click="sect.vie_sect(article_data.info_public.section.id, article_data.info_public.section.name); navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/section/'+this.sect.current_section+'/items/'+this.article.article_id+'/edit')" class="kiut"><img src="@/assets/resourses/icons/pencil.png">Правка</div>
       <ChangingAccess  :text="'у всех'" @For_whom="edit_role" :type_entity="2" :id_entity="article.article_id" @click="chain=false" :left="1200" :top="42"/>
       <div @click="publish_art()" class="plio">
           <img src="@/assets/resourses/icons/circle_ug.png">
@@ -9,8 +9,8 @@
         </div> 
       <div class="hillplis">{{article_data.info_public.article.name+'/'+'Первичная информация'}}</div>  
         <div class="difstack">{{ article_data.info_public.article.name }}
-          <div v-if="article_data.info_public.article.status_id<3" class="lkj">
-            {{ article_data.info_public.article.status_id===1?'черновик':'на модерации' }}
+          <div class="lkj">
+           на модерации
               </div>
         </div>
         <div class="spt">
@@ -29,22 +29,12 @@
       </div>
     </div>
   </template>
-  <script>
+  <script> 
   import { useThePrivateStore } from '~~/stores/private';
   import { useTeamsStore } from '~~/stores/Teams';
   import { useArticleStore } from '~~/stores/ArticleStore';
   import { useSectionStore } from '~~/stores/SectionStore';
-  import EditorJs from '@editorjs/editorjs'
-   import Header from '@editorjs/header'; 
-   import List from '@editorjs/list';
-   import ImageTool from '@editorjs/image';
-   import Table from '@editorjs/table';
-   import Quote from '@editorjs/quote';
-   import CodeTool from '@editorjs/code';
-   import Delimiter from '@editorjs/delimiter';
-   import RawTool from '@editorjs/raw';
-   import Warning from '@editorjs/warning';
-   import Checklist from '@editorjs/checklist';
+  
   definePageMeta ({
   layout: "company",
   middleware: ['auth', 'team'],
@@ -56,51 +46,7 @@
     const teams = useTeamsStore()
     const article = useArticleStore()
     const sect = useSectionStore()
-    const  editor = new EditorJs({
-      tools: { 
-      header: {
-        class: Header, 
-        inlineToolbar: ['link'],
-      }, 
-      list: { 
-        class: List, 
-        inlineToolbar: true 
-      },
-      image: {
-          class: ImageTool
-      },
-      quote: {
-          class: Quote
-      },
-      code: {
-          class: CodeTool
-      },
-      delimiter: {
-          class: Delimiter
-      },
-      raw: {
-          class: RawTool
-      },
-      table: {
-           class: Table
-      },
-      warning: {
-          class: Warning
-      },
-      checklist: {
-          class: Checklist
-      },
-  },
-      readOnly: true,
-      holder: 'editorjsc', 
-      onReady: ()=>{
-          import_edit()
-     
-  },
-  onChange:() =>{
-      
-  }
-  })
+   
   async function import_edit(){
           const url = new URL(
             "https://api.wiki.itl.systems/team/article/edit"
@@ -120,10 +66,11 @@
   };
   
   
-  await useFetch(url, {
+  const {data} = await useFetch(url, {
       method: "GET",
       headers,
-  }).then(r=>decode_edit(r.data.value.data.article.tabs))
+  })
+  return decode_edit(data.value.data.article.tabs)
       }
   function decode_edit(data){   //декодирует для вывода
     var ready_made_content = []
@@ -190,20 +137,29 @@
           break;
       } 
       }
-      editor.blocks.render({"time" : 1550476186479,
+      const options = {
+        id: 'editorjsc',
+        data: {"time" : 1550476186479,
       "blocks" : ready_made_content,
-      "version" : "2.8.1"})
+      "version" : "2.8.1"},
+      view: true
+      }
+      return options
   }
-    return{priv, teams, article, editor, sect}
+    return{priv, teams, article, sect, import_edit}
   },
-  created(){
+  async mounted(){
+  setTimeout(()=>{
+    this.import_edit().then((options)=>{this.editor=this.$editor(options)})
+  }, 100)
   setTimeout(()=>{this.info_article()}, 500) 
   },
   data(){
     return{
     article_data: [],
     editor_obj: {},
-    chain: false
+    chain: false,
+    editor: null
     }
   },
   methods:{
@@ -227,8 +183,6 @@ useFetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify(body),
-}).then(()=>{
-// window.location.href='/'+this.teams.session_TeamID+'.itl.wiki/section/'+this.sect.current_section+'/items/'+this.article.article_id
 })
 
     },
@@ -336,6 +290,7 @@ useFetch(url, {
     top: 14px;
     display: flex;
     align-content: center;
+    max-width: 300px;
     span{
       font-family: 'Roboto_regular';
       font-size: 14px;

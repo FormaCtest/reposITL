@@ -2,17 +2,17 @@
   <div>
     <div v-if="article_data.info_public">
       <SectionWindow/>
-    <div @click="otchai=otchai?false:true" class="otchai"><img src="@/assets/resourses/icons/chain.png"></div>
-    <div @click="navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/section/'+this.sect.current_section+'/items/'+this.article.article_id+'/edit')" class="pencil"><img src="@/assets/resourses/icons/pencil.png"></div>
-    <ChangingAccess @For_whom="edit_role" :type_entity="2" :id_entity="article.article_id" @click="otchai=false" :left="1200" :top="42"/>
-    <!-- <button class="ctbut" @click="delete_perm">Удалить</button> -->
+      <div v-if="teams.role!=='user'||article_data.info_public.properties.canShare" @click="otchai=otchai?false:true" class="otchai"><img src="@/assets/resourses/icons/chain.png"></div>
+      <div v-if="teams.role!=='user'||article_data.info_public.properties.canEdit" @click="navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki/section/'+this.sect.current_section+'/items/'+this.article.article_id+'/edit')" class="pencil"><img src="@/assets/resourses/icons/pencil.png"></div>
+      <ChangingAccess v-if="teams.role!=='user'||article_data.info_public.article.created_by==user.userId" @For_whom="edit_role" :type_entity="2" :id_entity="article.article_id" @click="otchai=false" :left="1200" :top="42"/>
+  
     <SHaRM v-if="otchai" :left="1300" :top="90" :left_arrw="385" :type_entity="1" :id_entity="this.article.article_id"/>
       <div class="hhiLLu">{{article_data.info_public.article.section.name+'/'+article_data.info_public.article.name}}</div>  
       <div class="huyt">{{ article_data.info_public.article.name }}</div>
       <div class="description">
         <div class="postDes">
           Автор:&nbsp;<div class="meaning">{{ article_data.info_public.article.creator.fullname }}</div>&nbsp;
-        </div>
+        </div> 
         <div class="postDes">
           &nbsp;Обновлено:&nbsp; <div class="meaning">{{ import_data(article_data.info_public.article.updated_at)  }}</div>
         </div> 
@@ -30,17 +30,7 @@ import { useSectionStore } from '~~/stores/SectionStore';
 import { useThePrivateStore } from '~~/stores/private';
 import { useTeamsStore } from '~~/stores/Teams';
 import { useArticleStore } from '~~/stores/ArticleStore';
-import EditorJs from '@editorjs/editorjs'
- import Header from '@editorjs/header'; 
- import List from '@editorjs/list';
- import ImageTool from '@editorjs/image';
- import Table from '@editorjs/table';
- import Quote from '@editorjs/quote';
- import CodeTool from '@editorjs/code';
- import Delimiter from '@editorjs/delimiter';
- import RawTool from '@editorjs/raw';
- import Warning from '@editorjs/warning';
- import Checklist from '@editorjs/checklist';
+import { useDataUserStore } from '~~/stores/UserData';
 definePageMeta ({
 layout: "company",
 middleware: ['auth', 'team'],
@@ -51,51 +41,7 @@ setup(){
   const priv = useThePrivateStore()
   const teams = useTeamsStore()
   const article = useArticleStore()
-  const  editor = new EditorJs({
-    tools: { 
-    header: {
-      class: Header, 
-      inlineToolbar: ['link'],
-    }, 
-    list: { 
-      class: List, 
-      inlineToolbar: true 
-    },
-    image: {
-        class: ImageTool
-    },
-    quote: {
-        class: Quote
-    },
-    code: {
-        class: CodeTool
-    },
-    delimiter: {
-        class: Delimiter
-    },
-    raw: {
-        class: RawTool
-    },
-    table: {
-         class: Table
-    },
-    warning: {
-        class: Warning
-    },
-    checklist: {
-        class: Checklist
-    },
-},
-    readOnly: true,
-    holder: 'editorjss', 
-    onReady: ()=>{
-        import_edit()
-   
-},
-onChange:() =>{
-    
-}
-})
+  const user = useDataUserStore()
 async function import_edit(){
         const url = new URL(
           "https://api.wiki.itl.systems/team/article/edit"
@@ -115,10 +61,11 @@ const headers = {
 };
 
 
-await useFetch(url, {
+const {data} = await useFetch(url, {
     method: "GET",
     headers,
-}).then(r=>decode_edit(r.data.value.data.article.tabs))
+})
+return decode_edit(data.value.data.article.tabs)
     }
 function decode_edit(data){   //декодирует для вывода
   var ready_made_content = []
@@ -185,14 +132,20 @@ function decode_edit(data){   //декодирует для вывода
         break;
     } 
     }
-    editor.blocks.render({"time" : 1550476186479,
+    const options = {
+      id: 'editorjss',
+      data: {"time" : 1550476186479,
     "blocks" : ready_made_content,
-    "version" : "2.8.1"})
+    "version" : "2.8.1"},
+      view: true
+    }
+    return options
     
 }
-  return{sect, priv, teams, article, editor}
+  return{sect, priv, teams, article, import_edit, user}
 },
-created(){
+mounted(){
+  setTimeout(()=>{this.import_edit().then((options)=>{this.editor = this.$editor(options)})}, 100)
   setTimeout(()=>{this.info_article()}, 500);
 
 },
@@ -200,7 +153,8 @@ data(){
   return{
   article_data: [],
   editor_obj: {},
-  otchai: false
+  otchai: false,
+  editor: null
   }
 },
 methods:{
@@ -223,13 +177,13 @@ let body = {
     "user_id": 147
 };
 
-fetch(url, {
+useFetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify(body),
 })
   },
-  async edit_role(type, userID){
+  async edit_role(type, persID){
     const url = new URL(
     "https://api.wiki.itl.systems/team/abilities/edit"
 );
@@ -246,9 +200,9 @@ let body = {
     "entity_id": this.article.article_id,
     "permission": type
 };
-if (typeof(userID)==='object'){
-  for (let a =0; a<=userID.length-1; a++){
-    body.user_id=userID[a].id
+if (typeof(persID)==='object'){
+  for (let a =0; a<=persID.length-1; a++){
+    body.user_id=persID[a].id
     useFetch(url, {
     method: "POST",
     headers,
@@ -256,7 +210,7 @@ if (typeof(userID)==='object'){
 })
   }
 }else{
-  body.user_id=userID
+  body.user_id=persID
 useFetch(url, {
     method: "POST",
    headers,
@@ -298,6 +252,8 @@ const {data: data2} = await useFetch(url2, {
     method: "GET",
     headers,
 })
+console.log(data1.value.data)
+console.log(data2.value.data)
 this.article_data={info_edit: data1.value.data, info_public: data2.value.data}
 
   },
@@ -329,7 +285,7 @@ this.article_data={info_edit: data1.value.data, info_public: data2.value.data}
   top: 100px;
   .cdx-block{
   position: relative;
-  left: -90px;
+  left: -80px;
 }
 }
 
@@ -416,6 +372,7 @@ display: flex;
 display: flex;
 flex-wrap: nowrap;
 position: relative;
+max-width: 400px;;
 left: 420px;
 top: 30px;
 font-size: 13px;

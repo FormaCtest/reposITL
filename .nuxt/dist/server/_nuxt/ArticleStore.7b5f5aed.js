@@ -1,2 +1,0 @@
-import{d as n}from"../server.mjs";import"vue";import{a as l,u as c,d as a}from"./private.7b9915f8.js";import{u as m}from"./SectionStore.63b2f3c7.js";const d=n("article",()=>{const r=l();c(),m();const e=a("name",{maxAge:r.Age}),t=a("id",{maxAge:r.Age});function o(u,s){e.value=u,t.value=s}function i(){e.value=null,t.value=null}return{use_article:o,article_id:t,article_name:e,exit_article:i}});export{d as u};
-//# sourceMappingURL=ArticleStore.7b5f5aed.js.map

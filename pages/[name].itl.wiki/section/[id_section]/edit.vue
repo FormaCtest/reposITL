@@ -10,8 +10,13 @@
             <ChangingAccess :del="true" @click="vis_ch=false" :type_entity="2" :id_entity="sect.current_section" :text="'Доступ'" :width_input="80" :width_img="14" :height_img="15" @For_whom="get_per" :left="5" :left_window="430" :left_arrw="5" :top= "18"/>
             <input class="HH" v-model="h_sec" type="text" placeholder="Заголовок раздела">
             <button @click="test_save" class="OP">Сохранить раздел</button>
-            <button @click=" navigateTo('/'+teams.session_TeamCode+'.itl.wiki/section/'+sect.current_section)" class="OT">Отменить</button>
+            <button @click=" navigateTo('/'+teams.session_TeamCode+'.itl.wiki/')" class="OT">Отменить</button>
+            <div @click="additional=additional?false:true" class="TTTR"><img  src="@/assets/resourses/icons/EL.png"></div>
             <div id="editorjs"></div>
+            <div v-if="additional">
+                <div class="era"></div>
+            <div class="additionalOO"><div class="lik" @click="delet()" ><span>Удалить</span></div></div>
+        </div>
         </div>
        
     </div>
@@ -21,90 +26,77 @@ import { useSectionStore } from '~~/stores/SectionStore';
 import { useThePrivateStore } from '~~/stores/private';
 import { useTeamsStore } from '~~/stores/Teams';
 import { useDataUserStore } from '~~/stores/UserData';
- import EditorJs from '@editorjs/editorjs'
-//  import Header from '@editorjs/header'; 
-//  import List from '@editorjs/list';
-//  import ImageTool from '@editorjs/image';
-//  import Table from '@editorjs/table';
-//  import Quote from '@editorjs/quote';
-//  import CodeTool from '@editorjs/code';
-//  import Delimiter from '@editorjs/delimiter';
-//  import RawTool from '@editorjs/raw';
-//  import Warning from '@editorjs/warning';
-//  import Checklist from '@editorjs/checklist';
  definePageMeta ({
   middleware: ['auth', 'team'],
 })
 export default {
-
+async mounted(){
+    setTimeout(() => {
+        this.import_data().then((t)=>{
+   const options= {
+    id: 'editorjs',
+    data: {"time" : 1550476186479,
+    "blocks" : [{"id": "save", "type": "paragraph", "data": {"text": t.value.data.section.content } }],
+    "version" : "2.8.1"},
+    tools: {},
+}
+this.editor = this.$editor(options)
+})  
+    }, 100);
+},
 setup(){
     const priv = useThePrivateStore()
     const teams = useTeamsStore()
     const user = useDataUserStore()
     const sect = useSectionStore()
-    const editor = new EditorJs({
-    holder: 'editorjs', 
-    data: {"time" : 1550476186479,
-    "blocks" : [{"id": "save", "type": "paragraph", "data": {"text": '' } }],
-    "version" : "2.8.1"},
-    onReady: ()=>{
-        import_data()
-   
-},
-onChange:() =>{
-    
-}
-})
-function datys(text){
-    editor.blocks.render({"time" : 1550476186479,
-    "blocks" : [{"id": "save", "type": "paragraph", "data": {"text": text } }],
-    "version" : "2.8.1"})
-   
-}
-    async function import_data(){
-        const url = new URL(
-    "https://api.wiki.itl.systems/team/section/edit"
-);
 
-const params = {
-    "team_id": teams.session_TeamID,
-    "section_id": sect.current_section
-};
-Object.keys(params)
-    .forEach(key => url.searchParams.append(key, params[key]));
- 
-const headers = {
-    "Authorization": "Bearer "+priv.token,
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-await useFetch(url, {
-    method: "GET",
-    headers,
-}).then(r=>{datys(r.data.value.data.section.content)})
-    }
-
-return {editor, priv, teams, user, sect, import_data}
+return {priv, teams, user, sect}
 },
 data(){
     return{
     h_sec: this.sect.current_name,
-    uSer: '',
-    permission: '',
+    uSer: false,
+    permission: false,
     parent: '',
     vis_select: false,
     link_section: 'Выберите раздел',
     error: false,
     block: false,
     alert: '',
-    vis_ch: false
+    vis_ch: false,
+    editor: null,
+    additional: false,
     }
 },
 
 
 methods:{
+    async import_data(){
+        const url = new URL(
+    "https://api.wiki.itl.systems/team/section/edit"
+);
+
+const params = {
+    "team_id": this.teams.session_TeamID,
+    "section_id": this.sect.current_section
+};
+Object.keys(params)
+    .forEach(key => url.searchParams.append(key, params[key]));
+ 
+const headers = {
+    "Authorization": "Bearer "+this.priv.token,
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+const {data} = await useFetch(url, {
+    method: "GET",
+    headers,
+})
+return data
+    },
+
     async delet(){
         const url = new URL(
     "https://api.wiki.itl.systems/team/section/delete"
@@ -117,7 +109,7 @@ const headers = {
 };
 
 let body = {
-    "section_id": this.parent,
+    "section_id": this.sect.current_section,
     "team_id": this.teams.session_TeamID
 };
    const {data, error} = await useFetch(url, {
@@ -137,13 +129,16 @@ if(!data.value){
               throw createError({ statusCode: 400, statusMessage: 'Слишком много запросов', fatal: true})
               break;
 }
+}else{
+    this.sect.close_sect()
+    navigateTo('/'+this.teams.session_TeamCode+'.itl.wiki') 
 }
 },
     get_per(act, id){
     this.uSer=id;
     this.permission=act
     },
-    info(list){
+    info(list){ 
      this.link_section=list
     },
     get_parent(id, name, block){
@@ -365,5 +360,47 @@ if(!data.value){
 .eRror{
     position: absolute;
     top: 70px;
+}
+.TTTR{
+    position: relative;
+    top: 3px;
+    left: 1305px;
+    cursor: pointer;
+    width: 50px;
+}
+.additionalOO{
+    font-family: 'Roboto_regular';
+    font-size: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    top: -330px;
+    left: 1150px;
+    box-shadow: -2px 4px 7px 1px rgb(243, 243, 243);
+    .lik{
+        cursor: pointer;
+        position: relative;
+        background-color: rgb(255, 255, 255);
+        height: 50px;
+        text-align: center;
+        line-height: 3.5;
+        &:hover{
+            background-color: aliceblue;
+            color: blue;
+        }
+    }
+}
+.era{
+    position: relative;
+    top: -330px;
+    left: 1305px;
+    width: 0px;
+    height: 0px;
+    border: 10px solid transparent;
+    border-bottom: 10px solid rgb(255, 255, 255);
+    z-index: 2;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
 }
 </style>

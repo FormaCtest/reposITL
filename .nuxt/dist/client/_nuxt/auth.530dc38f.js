@@ -1,1 +1,0 @@
-import{O as a,m as r}from"./entry.19428e20.js";import{u as i,a as n,d as u}from"./private.d82c0789.js";import{u as m}from"./SectionStore.763b80b6.js";const S=a((c,f)=>{const e=i(),t=n(),o=u(),s=m();if(!e.token)return t.DeleteData(),o.exit_company(),s.close_sect(),r("/login")});export{S as default};

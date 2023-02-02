@@ -128,7 +128,7 @@ async function Add_section(act, userID, data, nameSection, parent){    //соз�
         //айди пользователя, и роли, а после делаем из массива объект и передаем в боди
         if (data.blocks.length!==0){
             for (var a = 0; a<=data.blocks.length-1; a++){
-                body.blocks+=data.blocks[a].data.text+' '
+                if (data.blocks[a].data.text!=undefined) body.blocks+=data.blocks[a].data.text+' '
             }
          }
         useFetch(url, {
@@ -280,7 +280,7 @@ async function Edit_section (act, userID, data, nameSection, parent){
     if (data.blocks.length>=1){
         body.blocks=''
         for (var a = 0; a<=data.blocks.length-1; a++){
-            body.blocks+=data.blocks[a].data.text+' '
+            if (data.blocks[a].data.text!=undefined) body.blocks+=data.blocks[a].data.text+' '
         } 
     }else body.blocks='.'
     if (parent!==current_section.value) body.parent_id=parent
@@ -291,8 +291,10 @@ async function Edit_section (act, userID, data, nameSection, parent){
         body: JSON.stringify(body),
     }).then((r)=>{
         if (!r.error.value){
-            window.location.href='/'+teams.session_TeamCode+'.itl.wiki/section/'+current_section.value
-            Edit_score(act, userID, 'section', current_section.value)
+            navigateTo('/'+teams.session_TeamCode+'.itl.wiki/')
+            if (act&&userID) {
+                Edit_score(act, userID, 'section', current_section.value)
+            }
         }else{
             console.log('произошла ошибка')
         }

@@ -21,7 +21,7 @@
 import { useThePrivateStore } from '~~/stores/private';
 const priv = useThePrivateStore()
 if (priv.token) {
-  window.location.href="/Account/your_company"
+  navigateTo("/Account/your_company")
 }
 </script>
 <style scoped lang="scss">

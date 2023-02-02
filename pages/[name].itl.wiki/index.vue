@@ -15,7 +15,7 @@ export default{
     return{sect}
   },
   mounted(){
-    this.sect.close_sect()
+    setTimeout(()=>{this.sect.close_sect()}, 100) 
   }
 }
 </script>

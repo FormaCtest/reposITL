@@ -1,1 +1,0 @@
-import{b as e,o as r,e as _}from"./entry.19428e20.js";const o=_("div",{class:"red"},null,-1),t=[o],l={__name:"error",props:{error:Object},setup(s){return(c,n)=>(r(),e("div",null,t))}};export{l as default};

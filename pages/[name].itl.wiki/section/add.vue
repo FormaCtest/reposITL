@@ -8,7 +8,6 @@
            <div><input class="HH" v-model="h_sec" type="text" placeholder="Заголовок статьи"></div>
             <button @click="test_save" class="OP">Создать раздел</button>
             <button @click="navigateTo('/'+teams.session_TeamCode+'.itl.wiki/section/'+sect.current_section)" class="OT">Отменить</button>
-            <button :style="{top: '100px'}" @click="delet()" class="OT">Удалить</button>
             <div id="editorjs"></div>
         </div>
        
@@ -19,17 +18,6 @@ import { useSectionStore } from '~~/stores/SectionStore';
 import { useThePrivateStore } from '~~/stores/private';
 import { useTeamsStore } from '~~/stores/Teams';
 import { useDataUserStore } from '~~/stores/UserData';
- import EditorJs from '@editorjs/editorjs'
-//  import Header from '@editorjs/header'; 
-//  import List from '@editorjs/list';
-//  import ImageTool from '@editorjs/image';
-//  import Table from '@editorjs/table';
-//  import Quote from '@editorjs/quote';
-//  import CodeTool from '@editorjs/code';
-//  import Delimiter from '@editorjs/delimiter';
-//  import RawTool from '@editorjs/raw';
-//  import Warning from '@editorjs/warning';
-//  import Checklist from '@editorjs/checklist';
  definePageMeta ({
   middleware: ['auth', 'team'],
 })
@@ -40,45 +28,16 @@ setup(){
     const teams = useTeamsStore()
     const user = useDataUserStore()
     const sect = useSectionStore()
-const  editor = new EditorJs({
-    tools: { 
-    // header: {
-    //   class: Header, 
-    //   inlineToolbar: ['link'],
-    // }, 
-    // list: { 
-    //   class: List, 
-    //   inlineToolbar: true 
-    // },
-    // image: {
-    //     class: ImageTool
-    // },
-    // quote: {
-    //     class: Quote
-    // },
-    // code: {
-    //     class: CodeTool
-    // },
-    // delimiter: {
-    //     class: Delimiter
-    // },
-    // raw: {
-    //     class: RawTool
-    // },
-    // table: {
-    //      class: Table
-    // },
-    // warning: {
-    //     class: Warning
-    // },
-    // checklist: {
-    //     class: Checklist
-    // },
+    
+return {priv, teams, user, sect}
 },
-    holder: 'editorjs', 
-})
-
-return {editor, priv, teams, user, sect}
+async mounted(){
+const options = {
+id: 'editorjs',
+data: {},
+tools: {}
+}
+this.editor = this.$editor(options)              //если не получиться использовать метод из документации nxut 3
 },
 data(){
     return{
@@ -90,7 +49,8 @@ data(){
     link_section: 'Выберите раздел',
     error: false,
     block: false,
-    alert: ''
+    alert: '',
+    editor: null
     }
 },
 methods:{
@@ -150,8 +110,8 @@ if(!data.value){
         if(this.h_sec!='') {
             if (!this.block) {
                 this.editor.save().then((outputData) => {
-
-   this.sect.Add_section(this.permission, this.uSer, outputData, this.h_sec, this.parent)
+                console.log(outputData)
+//    this.sect.Add_section(this.permission, this.uSer, outputData, this.h_sec, this.parent)
 }).catch((error) => {
  console.log('Ошибка сохранения EditorJS: ', error)
 });

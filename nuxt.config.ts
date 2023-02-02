@@ -1,5 +1,9 @@
 import { defineNuxtConfig } from 'nuxt/config'
-export default {
+export default defineNuxtConfig({
+  ssr: true,
+  plugins: [
+    { src: '~/plugins/import_editor.js', mode: 'client' }
+  ],
     css: [
         '~/assets/scss/font_family.scss'
     ],
@@ -9,12 +13,7 @@ export default {
 
     modules: [
        '@pinia/nuxt',
-
+       
     ],
-    ssr: false,
-      loadingIndicator: {
-        name: '~/custom-locading-indicator.html',
-        color: '#000',
-        background: '#fff'
-      }
-}
+})
+// useeffect

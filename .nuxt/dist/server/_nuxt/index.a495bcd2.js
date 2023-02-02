@@ -1,2 +1,0 @@
-import{u as e}from"./SectionStore.63b2f3c7.js";import{openBlock as o,createElementBlock as r}from"vue";import{_ as s}from"./_plugin-vue_export-helper.a1a6add7.js";import"../server.mjs";import"#internal/nitro";import"vue-router";import"./private.7b9915f8.js";const c={setup(){return{sect:e()}},mounted(){this.sect.close_sect()}};function n(t,p,i,m,_,a){return o(),r("div")}const k=s(c,[["render",n]]);export{k as default};
-//# sourceMappingURL=index.a495bcd2.js.map
